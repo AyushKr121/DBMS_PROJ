@@ -5,13 +5,13 @@
 
 CREATE TABLE IF NOT EXISTS Course (
     Course_id INT PRIMARY KEY,
-    Course_Name VARCHAR(150),
+    Course_Name VARCHAR(150) NOT NULL,
     Description TEXT,
     Price DECIMAL(10,2),
     No_of_modules INT,
     No_of_weeks INT,
     Material TEXT,
-    Category VARCHAR(100)
+    Category VARCHAR(100) NOT NULL
 );
 
 
@@ -21,26 +21,27 @@ CREATE TABLE IF NOT EXISTS Course (
 
 CREATE TABLE IF NOT EXISTS Teacher (
     Teacher_id INT PRIMARY KEY,
-    First_name VARCHAR(100),
+    First_name VARCHAR(100) NOT NULL,
     Last_name VARCHAR(100),
     DOB DATE,
     Age INT,
     Sex VARCHAR(20),
-    Email VARCHAR(255),
-    Credential VARCHAR(255),
+    Email VARCHAR(255) NOT NULL,
+    Credential VARCHAR(255) NOT NULL,
     Salary DECIMAL(10,2),
-    Joining_date DATE,
+    Joining_date DATE NOT NULL,
     House_no VARCHAR(50),
     Street VARCHAR(150),
     City VARCHAR(100),
     State VARCHAR(100),
     Pincode VARCHAR(20),
-    Aadhar_id VARCHAR(20),
+    Aadhar_id VARCHAR(20) UNIQUE,
     LastSeen_Global_Notification_id INT,
 
     CONSTRAINT fk_teacher_global_notification
         FOREIGN KEY (LastSeen_Global_Notification_id)
-        REFERENCES GlobalNotification(Notification_id);
+        REFERENCES GlobalNotification(Notification_id)
+        ON DELETE SET NULL
 );
 
 
@@ -50,15 +51,15 @@ CREATE TABLE IF NOT EXISTS Teacher (
 
 CREATE TABLE IF NOT EXISTS Assistant (
     Assistant_id INT PRIMARY KEY,
+    First_name VARCHAR(100) NOT NULL,
+    Last_name VARCHAR(100),
     Age INT,
-    Aadhar_id VARCHAR(20),
+    Aadhar_id VARCHAR(20) UNIQUE,
     DOB DATE,
-    Email VARCHAR(255),
-    Credential VARCHAR(255),
+    Email VARCHAR(255) NOT NULL,
+    Credential VARCHAR(255) NOT NULL,
     Sex VARCHAR(20),
     Salary DECIMAL(10,2),
-    First_name VARCHAR(100),
-    Last_name VARCHAR(100),
     House_no VARCHAR(50),
     Street VARCHAR(150),
     City VARCHAR(100),
@@ -68,7 +69,8 @@ CREATE TABLE IF NOT EXISTS Assistant (
 
     CONSTRAINT fk_assistant_global_notification
         FOREIGN KEY (LastSeen_Global_Notification_id)
-        REFERENCES GlobalNotification(Notification_id);
+        REFERENCES GlobalNotification(Notification_id)
+        ON DELETE SET NULL
 );
 
 
@@ -78,14 +80,14 @@ CREATE TABLE IF NOT EXISTS Assistant (
 
 CREATE TABLE IF NOT EXISTS Admin (
     Admin_id INT PRIMARY KEY,
-    Age INT,
-    Aadhar_id VARCHAR(20),
-    DOB DATE,
-    Email VARCHAR(255),
-    Credential VARCHAR(255),
-    Sex VARCHAR(20),
-    First_name VARCHAR(100),
+    First_name VARCHAR(100) NOT NULL,
     Last_name VARCHAR(100),
+    Age INT,
+    Aadhar_id VARCHAR(20) UNIQUE,
+    DOB DATE,
+    Email VARCHAR(255) NOT NULL,
+    Credential VARCHAR(255) NOT NULL,
+    Sex VARCHAR(20),
     House_no VARCHAR(50),
     Street VARCHAR(150),
     City VARCHAR(100),
@@ -101,14 +103,15 @@ CREATE TABLE IF NOT EXISTS Admin (
 CREATE TABLE IF NOT EXISTS GlobalNotification (
     Notification_id INT PRIMARY KEY,
     Assistant_id INT,
-    Notification_date DATE,
-    Notification_time TIME,
-    Notification_title VARCHAR(255),
-    Description TEXT,
+    Notification_date DATE NOT NULL,
+    Notification_time TIME NOT NULL,
+    Notification_title VARCHAR(255) NOT NULL,
+    Description TEXT NOT NULL,
 
     CONSTRAINT fk_globalnotification_assistant
         FOREIGN KEY (Assistant_id)
         REFERENCES Assistant(Assistant_id)
+        ON DELETE SET NULL
 );
 
 
@@ -118,24 +121,25 @@ CREATE TABLE IF NOT EXISTS GlobalNotification (
 
 CREATE TABLE IF NOT EXISTS Student (
     Student_id INT PRIMARY KEY,
-    First_name VARCHAR(100),
+    First_name VARCHAR(100) NOT NULL,
     Last_name VARCHAR(100),
     Sex VARCHAR(20),
     DOB DATE,
-    Credential VARCHAR(255),
+    Credential VARCHAR(255) NOT NULL,
     Age INT,
-    Email VARCHAR(255),
+    Email VARCHAR(255) NOT NULL,
     House_no VARCHAR(50),
     Street VARCHAR(150),
     City VARCHAR(100),
     State VARCHAR(100),
     Pincode VARCHAR(20),
-    Aadhar_id VARCHAR(20),
+    Aadhar_id VARCHAR(20) UNIQUE,
     LastSeen_Global_Notification_id INT,
 
     CONSTRAINT fk_student_global_notification
         FOREIGN KEY (LastSeen_Global_Notification_id)
         REFERENCES GlobalNotification(Notification_id)
+        ON DELETE SET NULL
 );
 
 
@@ -159,6 +163,7 @@ CREATE TABLE IF NOT EXISTS Student_Contacts (
     CONSTRAINT fk_student_contacts_student
         FOREIGN KEY (Student_id)
         REFERENCES Student(Student_id)
+        ON DELETE CASCADE
 );
 
 
@@ -170,14 +175,15 @@ CREATE TABLE IF NOT EXISTS Student_Complaints (
     Complaint_id INT,
     Student_id INT,
     PRIMARY KEY(Complaint_id,Student_id),
-    Title VARCHAR(255),
-    Complaint_date DATE,
-    Complaint_time TIME,
+    Title VARCHAR(255) NOT NULL,
+    Complaint_date DATE NOT NULL,
+    Complaint_time TIME NOT NULL,
     Complaint_description TEXT,
 
     CONSTRAINT fk_student_complaints_student
         FOREIGN KEY (Student_id)
         REFERENCES Student(Student_id)
+        ON DELETE CASCADE
 );
 
 
@@ -193,15 +199,17 @@ CREATE TABLE IF NOT EXISTS Batch (
     Start_time TIME,
     End_time TIME,
     Venue VARCHAR(255),
-    Modules_Completed INT,
+    Modules_Completed INT DEFAULT 0,
 
     CONSTRAINT fk_batch_teacher
         FOREIGN KEY (Teacher_id)
-        REFERENCES Teacher(Teacher_id),
+        REFERENCES Teacher(Teacher_id)
+        ON DELETE SET NULL,
 
     CONSTRAINT fk_batch_course
         FOREIGN KEY (Course_id)
         REFERENCES Course(Course_id)
+        ON DELETE CASCADE
 );
 
 
@@ -214,17 +222,19 @@ CREATE TABLE IF NOT EXISTS Student_Attendance (
     Date DATE,
     Student_id INT,
     Batch_id INT,
-    Status VARCHAR(30),
+    Status INT CHECK Status IN (0,1),
 
     PRIMARY KEY (Date, Student_id, Batch_id),
 
     CONSTRAINT fk_student_attendance_student
         FOREIGN KEY (Student_id)
-        REFERENCES Student(Student_id),
+        REFERENCES Student(Student_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_student_attendance_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
 
 
@@ -236,21 +246,23 @@ CREATE TABLE IF NOT EXISTS Student_Attendance (
 CREATE TABLE IF NOT EXISTS Enrollment (
     Student_id INT,
     Batch_id INT,
-    Batch_Notification_Status VARCHAR(50),
-    Enrollment_date DATE,
+    Batch_Notification_Status BOOLEAN ,
+    Enrollment_date DATE NOT NULL,
     Feedback TEXT,
     Certificate VARCHAR(255),
-    Discount DECIMAL(10,2),
+    Discount DECIMAL(5,2) DEFAULT 0.00,
 
     PRIMARY KEY (Student_id, Batch_id),
 
     CONSTRAINT fk_enrollment_student
         FOREIGN KEY (Student_id)
-        REFERENCES Student(Student_id),
+        REFERENCES Student(Student_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_enrollment_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
 
 
@@ -268,6 +280,7 @@ CREATE TABLE IF NOT EXISTS Schedule (
     CONSTRAINT fk_schedule_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
 
 
@@ -280,11 +293,12 @@ CREATE TABLE IF NOT EXISTS Batch_Notification (
     Batch_id INT,
     PRIMARY KEY(Notification_id,Batch_id)
     Description TEXT,
-    Title VARCHAR(255),
+    Title VARCHAR(255) NOT NULL,
 
     CONSTRAINT fk_batch_notification_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
 
 
@@ -296,16 +310,17 @@ CREATE TABLE IF NOT EXISTS Test (
     Test_id INT,
     Batch_id INT,
     PRIMARY KEY(Test_id,Batch_id),
-    Test_title VARCHAR(255),
-    Date DATE,
+    Test_title VARCHAR(255) NOT NULL,
+    Date DATE ,
     Question_paper_Link VARCHAR(500),
     Answerkey_Link VARCHAR(500),
 
     CONSTRAINT fk_test_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
-
+-- ADD TRIGGER FOR DELETION IN BACKEND******************
 
 -- ============================================================
 -- 17. TEACHER CONTACTS
@@ -321,6 +336,7 @@ CREATE TABLE IF NOT EXISTS Teacher_Contacts (
     CONSTRAINT fk_teacher_contacts_teacher
         FOREIGN KEY (Teacher_id)
         REFERENCES Teacher(Teacher_id)
+        ON DELETE CASCADE
 );
 
 
@@ -332,13 +348,14 @@ CREATE TABLE IF NOT EXISTS Teacher_Contacts (
 CREATE TABLE IF NOT EXISTS Teacher_Attendance_Record (
     Date DATE,
     Teacher_id INT,
-    Status VARCHAR(30),
+    Status INT CHECK Status IN (0,1),
 
     PRIMARY KEY (Date, Teacher_id),
 
     CONSTRAINT fk_teacher_attendance_teacher
         FOREIGN KEY (Teacher_id)
         REFERENCES Teacher(Teacher_id)
+        ON DELETE CASCADE
 );
 
 
@@ -350,14 +367,15 @@ CREATE TABLE IF NOT EXISTS Teacher_Complaints (
     Complaint_id INT,
     Teacher_id INT,
     PRIMARY KEY(Complaint_id,Teacher_id),
-    Title VARCHAR(255),
-    Complaint_date DATE,
-    Complaint_time TIME,
+    Title VARCHAR(255) NOT NULL,
+    Complaint_date DATE NOT NULL,
+    Complaint_time TIME NOT NULL,
     Complaint_description TEXT,
 
     CONSTRAINT fk_teacher_complaints_teacher
         FOREIGN KEY (Teacher_id)
         REFERENCES Teacher(Teacher_id)
+        ON DELETE CASCADE
 );
 
 
@@ -369,7 +387,7 @@ CREATE TABLE IF NOT EXISTS Teacher_Complaints (
 CREATE TABLE IF NOT EXISTS Course_Module (
     Module_id INT,
     Course_id INT,
-    Module_title VARCHAR(255),
+    Module_title VARCHAR(255) ,
     Module_description TEXT,
 
     PRIMARY KEY (Module_id, Course_id),
@@ -378,6 +396,7 @@ CREATE TABLE IF NOT EXISTS Course_Module (
         FOREIGN KEY (Course_id)
         REFERENCES Course(Course_id)
 );
+
 
 
 -- ============================================================
