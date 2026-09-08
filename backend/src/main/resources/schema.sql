@@ -387,14 +387,19 @@ CREATE TABLE IF NOT EXISTS Teacher_Complaints (
 CREATE TABLE IF NOT EXISTS Course_Module (
     Module_id INT,
     Course_id INT,
+<<<<<<< Updated upstream
     Module_title VARCHAR(255) ,
+=======
+    Module_title VARCHAR(255) NOT NULL,
+>>>>>>> Stashed changes
     Module_description TEXT,
 
     PRIMARY KEY (Module_id, Course_id),
 
     CONSTRAINT fk_course_module_course
         FOREIGN KEY (Course_id)
-        REFERENCES Course(Course_id)
+        REFERENCES Course(Course_id) 
+        ON DELETE CASCADE
 );
 
 
@@ -406,14 +411,15 @@ CREATE TABLE IF NOT EXISTS Course_Module (
 CREATE TABLE IF NOT EXISTS Teacher_Salary_Records (
     Receipt_id INT PRIMARY KEY,
     Teacher_id INT,
-    Amount DECIMAL(10,2),
-    Salary_payment_date DATE,
-    Month INT,
-    Year INT,
+    Amount DECIMAL(10,2) NOT NULL,
+    Salary_payment_date DATE NOT NULL,
+    Month INT NOT NULL,
+    Year INT NOT NULL,
 
     CONSTRAINT fk_teacher_salary_teacher
         FOREIGN KEY (Teacher_id)
         REFERENCES Teacher(Teacher_id)
+        ON DELETE CASCADE
 );
 
 
@@ -424,13 +430,14 @@ CREATE TABLE IF NOT EXISTS Teacher_Salary_Records (
 
 CREATE TABLE IF NOT EXISTS Teacher_Salary_Details (
     Receipt_id INT,
-    Description TEXT,
+    Description TEXT, 
 
     PRIMARY KEY (Receipt_id, Description),
 
     CONSTRAINT fk_teacher_salary_details
         FOREIGN KEY (Receipt_id)
         REFERENCES Teacher_Salary_Records(Receipt_id)
+        ON DELETE CASCADE
 );
 
 
@@ -442,13 +449,14 @@ CREATE TABLE IF NOT EXISTS Teacher_Salary_Details (
 CREATE TABLE IF NOT EXISTS Assistant_Attendance_Record (
     Date DATE,
     Assistant_id INT,
-    Status VARCHAR(30),
+    Status DECIMAL(2,1) CHECK (STATUS IN (0,0.5,1)),
 
     PRIMARY KEY (Date, Assistant_id),
 
     CONSTRAINT fk_assistant_attendance
         FOREIGN KEY (Assistant_id)
         REFERENCES Assistant(Assistant_id)
+        ON DELETE CASCADE
 );
 
 
@@ -459,13 +467,14 @@ CREATE TABLE IF NOT EXISTS Assistant_Attendance_Record (
 
 CREATE TABLE IF NOT EXISTS Assistant_Contacts (
     Assistant_id INT,
-    Phone_no VARCHAR(20),
+    Phone_no VARCHAR(20), 
 
     PRIMARY KEY (Assistant_id, Phone_no),
 
     CONSTRAINT fk_assistant_contacts
         FOREIGN KEY (Assistant_id)
         REFERENCES Assistant(Assistant_id)
+        ON DELETE CASCADE
 );
 
 
@@ -477,9 +486,10 @@ CREATE TABLE IF NOT EXISTS Assistant_Complaints (
     Complaint_id INT,
     Assistant_id INT,
     PRIMARY KEY(Complaint_id,Assistant_id),
-    Complaint_description TEXT,
-    Complaint_date DATE,
-    Complaint_time TIME,
+    Complaint_description TEXT NOT NULL, 
+    Complaint_Title NOT NULL,
+    Complaint_date DATE NOT NULL,    
+    Complaint_time TIME NOT NULL,    
 
     CONSTRAINT fk_assistant_complaints
         FOREIGN KEY (Assistant_id)
@@ -494,13 +504,14 @@ CREATE TABLE IF NOT EXISTS Assistant_Complaints (
 
 CREATE TABLE IF NOT EXISTS Admin_Contacts (
     Admin_id INT,
-    Phone_no VARCHAR(20),
+    Phone_no VARCHAR(20),   -- Constraint  not null
 
     PRIMARY KEY (Admin_id, Phone_no),
 
     CONSTRAINT fk_admin_contacts
         FOREIGN KEY (Admin_id)
         REFERENCES Admin(Admin_id)
+        ON DELETE CASCADE
 );
 
 
@@ -511,19 +522,21 @@ CREATE TABLE IF NOT EXISTS Admin_Contacts (
 CREATE TABLE IF NOT EXISTS Fee_Payment (
     Receipt_id INT PRIMARY KEY,
     Student_id INT,
-    Batch_id INT,
-    Amount DECIMAL(10,2),
-    Payment_date DATE,
-    Payment_time TIME,
-    Mode_of_payment VARCHAR(50),
+    Batch_id INT,   
+    Amount DECIMAL(10,2) NOT NULL, 
+    Payment_date DATE NOT NULL,      
+    Payment_time TIME NOT NULL,  
+    Mode_of_payment VARCHAR(50) NOT NULL, 
 
     CONSTRAINT fk_fee_payment_student
         FOREIGN KEY (Student_id)
-        REFERENCES Student(Student_id),
+        REFERENCES Student(Student_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_fee_payment_batch
         FOREIGN KEY (Batch_id)
         REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE
 );
 
 
@@ -541,6 +554,7 @@ CREATE TABLE IF NOT EXISTS Fee_Details (
     CONSTRAINT fk_fee_details
         FOREIGN KEY (Receipt_id)
         REFERENCES Fee_Payment(Receipt_id)
+        ON DELETE CASCADE
 );
 
 
@@ -551,14 +565,15 @@ CREATE TABLE IF NOT EXISTS Fee_Details (
 CREATE TABLE IF NOT EXISTS Assistant_Salary_Records (
     Receipt_id INT PRIMARY KEY,
     Assistant_id INT,
-    Amount DECIMAL(10,2),
-    Salary_payment_date DATE,
-    Month INT,
-    Year INT,
+    Amount DECIMAL(10,2) NOT NULL,   
+    Salary_payment_date DATE NOT NULL,   
+    Month INT NOT NULL,  
+    Year INT NOT NULL,   
 
-    CONSTRAINT fk_assistant_salary_assistant
+    CONSTRAINT fk_assistant_salary_assistant    
         FOREIGN KEY (Assistant_id)
         REFERENCES Assistant(Assistant_id)
+        ON DELETE CASCADE
 );
 
 
@@ -569,13 +584,14 @@ CREATE TABLE IF NOT EXISTS Assistant_Salary_Records (
 
 CREATE TABLE IF NOT EXISTS Assistant_Salary_Details (
     Receipt_id INT,
-    Description TEXT,
+    Description TEXT, 
 
     PRIMARY KEY (Receipt_id, Description),
 
     CONSTRAINT fk_assistant_salary_details
         FOREIGN KEY (Receipt_id)
         REFERENCES Assistant_Salary_Records(Receipt_id)
+        ON DELETE CASCADE
 );
 
 
@@ -588,22 +604,28 @@ CREATE TABLE IF NOT EXISTS Takes (
     Student_id INT,
     Batch_id INT,
     Test_id INT,
-    Score DECIMAL(5,2),
+    Score DECIMAL(5,2),         
 
     PRIMARY KEY (Student_id, Batch_id, Test_id),
 
     CONSTRAINT fk_takes_student
         FOREIGN KEY (Student_id)
-        REFERENCES Student(Student_id),
+        REFERENCES Student(Student_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_takes_batch
         FOREIGN KEY (Batch_id)
-        REFERENCES Batch(Batch_id),
+        REFERENCES Batch(Batch_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_takes_test
         FOREIGN KEY (Test_id)
         REFERENCES Test(Test_id)
+        ON DELETE CASCADE
 );
+
+
+-- Add not NULL to middle name (in each of the following tables), defautl value = empty string
 
 
 -- ============================================================
@@ -614,13 +636,14 @@ CREATE TABLE IF NOT EXISTS Takes (
 CREATE TABLE IF NOT EXISTS Student_Middle_Name (
     Sequence_No INT,
     Student_id INT,
-    Middle_Name VARCHAR(100),
+    Middle_Name VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Sequence_No, Student_id),
 
     CONSTRAINT fk_student_middle_name_student
         FOREIGN KEY (Student_id)
         REFERENCES Student(Student_id)
+        ON DELETE CASCADE
 );
 
 
@@ -632,7 +655,7 @@ CREATE TABLE IF NOT EXISTS Student_Middle_Name (
 CREATE TABLE IF NOT EXISTS Teacher_Middle_Name (
     Sequence_No INT,
     Teacher_id INT,
-    Middle_Name VARCHAR(100),
+    Middle_Name VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Sequence_No, Teacher_id),
 
@@ -650,13 +673,14 @@ CREATE TABLE IF NOT EXISTS Teacher_Middle_Name (
 CREATE TABLE IF NOT EXISTS Assistant_Middle_Name (
     Sequence_No INT,
     Assistant_id INT,
-    Middle_Name VARCHAR(100),
+    Middle_Name VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Sequence_No, Assistant_id),
 
     CONSTRAINT fk_assistant_middle_name
         FOREIGN KEY (Assistant_id)
         REFERENCES Assistant(Assistant_id)
+        ON DELETE CASCADE
 );
 
 
@@ -667,12 +691,13 @@ CREATE TABLE IF NOT EXISTS Assistant_Middle_Name (
 
 CREATE TABLE IF NOT EXISTS Admin_Middle_Name (
     Sequence_No INT,
-    Admin_id INT,
-    Middle_Name VARCHAR(100),
+    Admin_id INT ,
+    Middle_Name VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Sequence_No, Admin_id),
 
     CONSTRAINT fk_admin_middle_name
         FOREIGN KEY (Admin_id)
         REFERENCES Admin(Admin_id)
+        ON DELETE CASCADE
 );
