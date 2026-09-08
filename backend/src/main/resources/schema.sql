@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS Student_Attendance (
     Date DATE,
     Student_id INT,
     Batch_id INT,
-    Status INT CHECK Status IN (0,1),
+    Status INT CHECK (Status IN (0,1)),
 
     PRIMARY KEY (Date, Student_id, Batch_id),
 
@@ -348,7 +348,7 @@ CREATE TABLE IF NOT EXISTS Teacher_Contacts (
 CREATE TABLE IF NOT EXISTS Teacher_Attendance_Record (
     Date DATE,
     Teacher_id INT,
-    Status INT CHECK Status IN (0,1),
+    Status DECIMAL(2,1) CHECK (Status IN (0,0.5,1)),
 
     PRIMARY KEY (Date, Teacher_id),
 
