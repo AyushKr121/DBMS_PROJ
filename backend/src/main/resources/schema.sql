@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS Student_Complaints (
     Title VARCHAR(255) NOT NULL,
     Complaint_date DATE NOT NULL,
     Complaint_time TIME NOT NULL,
-    Complaint_description TEXT,
+    Complaint_description TEXT ,
 
     CONSTRAINT fk_student_complaints_student
         FOREIGN KEY (Student_id)
@@ -387,11 +387,7 @@ CREATE TABLE IF NOT EXISTS Teacher_Complaints (
 CREATE TABLE IF NOT EXISTS Course_Module (
     Module_id INT,
     Course_id INT,
-<<<<<<< Updated upstream
-    Module_title VARCHAR(255) ,
-=======
     Module_title VARCHAR(255) NOT NULL,
->>>>>>> Stashed changes
     Module_description TEXT,
 
     PRIMARY KEY (Module_id, Course_id),
@@ -486,8 +482,8 @@ CREATE TABLE IF NOT EXISTS Assistant_Complaints (
     Complaint_id INT,
     Assistant_id INT,
     PRIMARY KEY(Complaint_id,Assistant_id),
-    Complaint_description TEXT NOT NULL, 
-    Complaint_Title NOT NULL,
+    Complaint_description TEXT, 
+    Complaint_Title TEXT NOT NULL,
     Complaint_date DATE NOT NULL,    
     Complaint_time TIME NOT NULL,    
 
