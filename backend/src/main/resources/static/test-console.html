@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Console Test</title>
+</head>
+<body>
+    <h2>Database Query Executed</h2>
+    <p>Right-click anywhere on this page, click <strong>Inspect</strong>, and open the <strong>Console</strong> tab to see the database results.</p>
+
+    <script>
+        // 1. When the page loads, make an HTTP GET request to your Spring Boot API
+        fetch('/api/test-query')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // 2. Parse the response as JSON
+            })
+            .then(data => {
+                // 3. Print the database result to the browser console
+                console.log("✅ SUCCESS: Data fetched from MySQL Database:");
+                console.table(data); // console.table creates a nice visual grid in the console
+                console.log("Raw JSON Array:", data);
+            })
+            .catch(error => {
+                console.error("❌ ERROR fetching data:", error);
+            });
+    </script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 install java 25
 install javac 25
 install java extension from microsoft
