@@ -3,8 +3,9 @@ import axiosInstance from "./axiosInstance";
 const authApi = {
   login: async (userId, password) => {
     const response = await axiosInstance.post("/auth/login", {
-      userId,
-      password,
+      email: userId,
+      credential: password, // Changed from 'password' to 'credential'
+      role: "student"
     });
     return response.data;
   },
