@@ -10,19 +10,27 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // Allow preflight CORS requests
-        if (request.getMethod().equalsIgnoreCase("OPTIONS")) return true;
+    public boolean preHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler) throws Exception {
 
-        // Get the session. Passing 'false' means it won't create a new session if one doesn't exist.
+        // Allow CORS preflight requests
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("userId") == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: Please log in first.");
-            return false; // Block request
+            response.setContentType("application/json");
+            response.getWriter().write(
+                "{\"message\":\"Unauthorized: Please log in first.\"}"
+            );
+            return false;
         }
 
-        return true; // Allow request, session is valid
+        return true;
     }
 }
