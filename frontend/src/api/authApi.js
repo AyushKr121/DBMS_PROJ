@@ -1,17 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 const authApi = {
-  login: async (userId, password) => {
+  login: async (role, email, credential) => {
     const response = await axiosInstance.post("/auth/login", {
-      email: userId,
-      credential: password, // Changed from 'password' to 'credential'
-      role: "student"
+      role: role.toLowerCase(),
+      email,
+      credential,
     });
-    return response.data;
-  },
 
-  logout: async () => {
-    const response = await axiosInstance.post("/auth/logout");
     return response.data;
   },
 
@@ -20,14 +16,17 @@ const authApi = {
     return response.data;
   },
 
-  changePassword: async (currentPassword, newPassword) => {
+  signup: async (userData) => {
     const response = await axiosInstance.post(
-      "/auth/change-password",
-      {
-        currentPassword,
-        newPassword,
-      }
+      "/auth/signup",
+      userData
     );
+
+    return response.data;
+  },
+
+  logout: async () => {
+    const response = await axiosInstance.post("/auth/logout");
     return response.data;
   },
 };

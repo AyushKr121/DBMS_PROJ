@@ -16,8 +16,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const currentUser = await authApi.getCurrentUser();
-        setUser(currentUser);
+        const response = await authApi.getCurrentUser();
+
+        setUser({
+          id: response.id,
+          role: response.role.toUpperCase(),
+        });
       } catch {
         setUser(null);
       } finally {
@@ -28,14 +32,26 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
-  const login = async (userId, password) => {
-    const authenticatedUser = await authApi.login(
-      userId,
-      password
-    );
+  const login = async (role, email, credential) => {
+    setLoading(true);
 
-    setUser(authenticatedUser);
-    return authenticatedUser;
+    try {
+      const response = await authApi.login(
+        role,
+        email,
+        credential
+      );
+
+      const authenticatedUser = {
+        id: response.id,
+        role: response.role.toUpperCase(),
+      };
+
+      setUser(authenticatedUser);
+      return authenticatedUser;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -46,16 +62,16 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const value = {
-    user,
-    loading,
-    isAuthenticated: Boolean(user),
-    login,
-    logout,
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        isAuthenticated: Boolean(user),
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -65,9 +81,7 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used within an AuthProvider"
-    );
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;

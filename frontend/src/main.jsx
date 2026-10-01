@@ -16,6 +16,7 @@
 //   </React.StrictMode>
 // );
 
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
