@@ -619,14 +619,9 @@ CREATE TABLE IF NOT EXISTS Takes (
         REFERENCES Student(Student_id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_takes_batch
-        FOREIGN KEY (Batch_id)
-        REFERENCES Batch(Batch_id)
-        ON DELETE CASCADE,
-
     CONSTRAINT fk_takes_test
-        FOREIGN KEY (Test_id)
-        REFERENCES Test(Test_id)
+        FOREIGN KEY (Test_id,Batch_id)
+        REFERENCES Test(Test_id,Batch_id)
         ON DELETE CASCADE
 );
 
