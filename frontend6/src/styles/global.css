@@ -1,0 +1,126 @@
+/* ------------------------------------------------------------------
+   Design tokens + base styles
+   ------------------------------------------------------------------ */
+:root {
+  --ink: #14213d;
+  --ink-2: #1d2d52;
+  --ink-3: #2b3d68;
+  --brand: #2447a8;
+  --brand-600: #1c3a8f;
+  --brand-50: #edf2fd;
+  --accent: #f5a524;
+  --accent-600: #d98a0b;
+  --accent-50: #fef4e0;
+
+  --bg: #f2f5f9;
+  --surface: #ffffff;
+  --line: #dde3ec;
+  --line-2: #ebeff5;
+  --text: #17233b;
+  --muted: #5b6b82;
+
+  --ok: #1f8a5b;
+  --ok-50: #e5f5ed;
+  --warn: #a86b00;
+  --warn-50: #fff3d6;
+  --danger: #c0392b;
+  --danger-50: #fce9e6;
+  --info: #2b6cb0;
+  --info-50: #e6f0fb;
+
+  --r-lg: 12px;
+  --r: 8px;
+  --r-sm: 6px;
+
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-head: 'Sora', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --sidebar-w: 264px;
+  --focus: 0 0 0 3px rgba(36, 71, 168, 0.28);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 0 0 0.5em;
+  color: var(--ink);
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.05rem; }
+h4 { font-size: 0.95rem; }
+
+p { margin: 0 0 0.8em; }
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 1.2rem 0; }
+code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+
+:focus-visible { outline: none; box-shadow: var(--focus); border-radius: var(--r-sm); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* ---------------- Utilities ---------------- */
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.nowrap { white-space: nowrap; }
+.right { text-align: right; }
+.center { text-align: center; }
+.strong { font-weight: 600; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hidden { display: none !important; }
+
+.stack { display: flex; flex-direction: column; gap: 0.9rem; }
+.stack-sm { display: flex; flex-direction: column; gap: 0.5rem; }
+.row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.row-end { display: flex; align-items: flex-end; gap: 0.6rem; flex-wrap: wrap; }
+.spread { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+.grow { flex: 1 1 auto; min-width: 0; }
+
+.grid { display: grid; gap: 1rem; }
+.grid-2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.grid-3 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.grid-4 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); }
+
+.dl > div { display: flex; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px dashed var(--line); }
+.dl > div:last-child { border-bottom: 0; }
+.dl dt { width: 150px; flex: none; color: var(--muted); }
+.dl dd { margin: 0; font-weight: 500; min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .dl > div { flex-direction: column; gap: 0.1rem; } .dl dt { width: auto; } }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.25rem 0.7rem; border: 1px solid var(--line); border-radius: 99px;
+  background: var(--surface); font-size: 0.85rem; cursor: pointer; user-select: none;
+}
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chip:focus-within { box-shadow: var(--focus); }
