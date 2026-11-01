@@ -4,6 +4,7 @@
  * lives here.
  */
 import { api, authApi } from './index';
+import { request } from './client';
 import { ROLE_CFG } from '@/utils/constants';
 import { blankToNull, nowTime, numOrNull, today, toApiTime } from '@/utils/format';
 import { isEmail, isPhone, isPincode, isSafeKey, normalizePhone, UNSAFE_KEY_MESSAGE } from '@/utils/validators';
@@ -99,12 +100,9 @@ export async function updatePerson(role, id, patch) {
 }
 
 export async function changePassword(role, id, current, next) {
-  const cfg = ROLE_CFG[role];
   if (!next || next.length < 4) fail('The new password must be at least 4 characters.');
-  const fresh = await api.get(cfg.resource, id);
-  if (fresh.Credential !== current) fail('Your current password is incorrect.');
   if (current === next) fail('Choose a password different from the current one.');
-  return api.update(cfg.resource, { ...fresh, Credential: next });
+  return authApi.changePassword(current, next);
 }
 
 /** Staff action: set a new password for someone who forgot theirs. */
@@ -204,8 +202,7 @@ export async function setLastSeen(role, id, notificationId) {
   // Callers catch and log failures; saving the marker is a convenience and must never block the page.
   if (role === 'assistant') return api.save('assistantLastSeen', { Assistant_id: id, LastSeen_Global_Notification_id: notificationId });
   if (role === 'student' || role === 'teacher') {
-    const fresh = await api.get(role, id);
-    return api.update(role, { ...fresh, LastSeen_Global_Notification_id: notificationId });
+    return request('PATCH', `/api/${role}/${id}/last-seen-notification`, notificationId);
   }
   return null;
 }

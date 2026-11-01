@@ -25,7 +25,10 @@ export default function AttendanceSheet({ batchId, students }) {
   const [date, setDate] = useState(today());
   const [marks, setMarks] = useState({});
 
-  const rows = useMemo(() => (s.loading || s.error ? [] : s.d.studentAttendance.filter((a) => a.Batch_id === batchId)), [s, batchId]);
+  const rows = useMemo(
+    () => (s.loading || s.error ? [] : s.d.studentAttendance.filter((a) => a.Batch_id === batchId)),
+    [s.d.studentAttendance, s.loading, s.error, batchId],
+  );
   const forDate = useMemo(() => rows.filter((a) => a.Date === date), [rows, date]);
 
   useEffect(() => {
@@ -34,7 +37,11 @@ export default function AttendanceSheet({ batchId, students }) {
       const saved = forDate.find((a) => a.Student_id === e.Student_id);
       next[e.Student_id] = saved ? Number(saved.Status) : 1;
     });
-    setMarks(next);
+    setMarks((previous) => {
+      const keys = Object.keys(next);
+      if (keys.length === Object.keys(previous).length && keys.every((key) => previous[key] === next[key])) return previous;
+      return next;
+    });
   }, [forDate, students]);
 
   const g = gate(s);

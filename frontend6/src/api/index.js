@@ -71,6 +71,7 @@ export const api = {
 export const authApi = {
   login: (role, email, credential) => request('POST', '/api/auth/login', { role, email, credential }),
   signup: (payload) => request('POST', '/api/auth/signup', payload),
+  changePassword: (currentPassword, newPassword) => request('POST', '/api/auth/change-password', { currentPassword, newPassword }),
   me: () => request('GET', '/api/auth/me'),
   logout: () => request('POST', '/api/auth/logout'),
 };

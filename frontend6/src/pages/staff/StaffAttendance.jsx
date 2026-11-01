@@ -21,6 +21,8 @@ import PersonCell from '@/components/people/PersonCell';
 import AttendanceSheet from '@/components/batch/AttendanceSheet';
 import EmptyState from '@/components/ui/EmptyState';
 
+const EMPTY_ROWS = [];
+
 /** kind = 'students' (pick a batch) | 'teachers' | 'assistants' (everyone, one date). */
 export default function StaffAttendance({ kind }) {
   useDocumentTitle('Attendance');
@@ -53,13 +55,17 @@ function StaffByDate({ role }) {
   const [run, busy] = useAction();
   const [date, setDate] = useState(today());
   const [marks, setMarks] = useState({});
-  const people = s.d[cfg.resource] || [];
-  const all = s.d[cfg.attendance] || [];
+  const people = s.d[cfg.resource] || EMPTY_ROWS;
+  const all = s.d[cfg.attendance] || EMPTY_ROWS;
   const forDate = useMemo(() => all.filter((a) => a.Date === date), [all, date]);
   useEffect(() => {
     const m = {};
     people.forEach((p) => { const saved = forDate.find((a) => a[cfg.idField] === p[cfg.idField]); m[p[cfg.idField]] = saved ? Number(saved.Status) : 1; });
-    setMarks(m);
+    setMarks((previous) => {
+      const keys = Object.keys(m);
+      if (keys.length === Object.keys(previous).length && keys.every((key) => previous[key] === m[key])) return previous;
+      return m;
+    });
   }, [forDate, people, cfg.idField]);
   const g = gate(s);
   if (g) return g;
