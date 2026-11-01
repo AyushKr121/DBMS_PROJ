@@ -1,6 +1,6 @@
 // All JSON field names below are EXACTLY what the Spring backend (Jackson) expects,
 // e.g. batch_id, course_Name, modules_Completed, lastSeen_Global_Notification_id.
-const BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const BASE = import.meta.env.VITE_API_BASE_URL || 'https://localhost:8443';
 
 export async function req(method, path, body) {
   const res = await fetch(BASE + path, {

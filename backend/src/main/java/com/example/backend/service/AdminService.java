@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.entity.Admin;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.repository.AdminRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,12 @@ import java.util.List;
 public class AdminService {
 
     private final AdminRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminService(AdminRepository repository) {
+    // Inject PasswordEncoder alongside your existing AdminRepository
+    public AdminService(AdminRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Admin> getAll() {
@@ -26,6 +30,10 @@ public class AdminService {
     }
 
     public Admin create(Admin entity) {
+        // Hash the plain-text password before saving to the database
+        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
+            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        }
         return repository.save(entity);
     }
 
@@ -33,7 +41,19 @@ public class AdminService {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Admin not found");
         }
+        
+        // Retrieve the existing admin to prevent overwriting the password with null if it isn't sent in the request
+        Admin existingAdmin = repository.findById(id).get();
+        
         entity.setAdmin_id(id);
+        
+        // Only hash and update the password if a new one is provided
+        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
+            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        } else {
+            entity.setCredential(existingAdmin.getCredential()); // Retain the old hash
+        }
+        
         return repository.save(entity);
     }
 
