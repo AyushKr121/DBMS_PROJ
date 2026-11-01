@@ -28,10 +28,17 @@ public class FieldEncryptor implements AttributeConverter<String, String> {
     // Static method for manual decryption (if ever needed)
     public static String decrypt(String dbData) {
         if (dbData == null || dbData.trim().isEmpty()) return dbData;
+        byte[] encrypted;
+        try {
+            encrypted = Base64.getDecoder().decode(dbData);
+        } catch (IllegalArgumentException e) {
+            return dbData;
+        }
+        if (encrypted.length == 0 || encrypted.length % 16 != 0) return dbData;
         try {
             Cipher cipher = Cipher.getInstance(AES);
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(SECRET.getBytes(), AES));
-            return new String(cipher.doFinal(Base64.getDecoder().decode(dbData)));
+            return new String(cipher.doFinal(encrypted));
         } catch (Exception e) {
             throw new RuntimeException("Decryption failed", e);
         }

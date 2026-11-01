@@ -1,4 +1,4 @@
-const BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/+$/, '');
+const BASE = (import.meta.env.DEV ? '' : (import.meta.env.VITE_API_BASE_URL || '')).replace(/\/+$/, '');
 
 export const API_BASE = BASE;
 
