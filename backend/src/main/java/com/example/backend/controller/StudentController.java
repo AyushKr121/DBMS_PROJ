@@ -41,6 +41,14 @@ public class StudentController {
         return ResponseEntity.ok(service.update(Student_id, entity));
     }
 
+    @PatchMapping("/{Student_id}/last-seen-notification")
+    public ResponseEntity<Void> updateLastSeenNotification(
+            @PathVariable Integer Student_id,
+            @RequestBody Integer notificationId) {
+        service.updateLastSeenNotification(Student_id, notificationId);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{Student_id}")
     public ResponseEntity<Void> delete(@PathVariable Integer Student_id) {
         service.delete(Student_id);

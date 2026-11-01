@@ -271,6 +271,76 @@ public class AuthController {
     // 3. CURRENT USER / SESSION RESTORATION
     // ==========================================
 
+    @PostMapping("/auth/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody Map<String, String> passwords,
+            HttpServletRequest request) {
+
+        String currentPassword = passwords.get("currentPassword");
+        String newPassword = passwords.get("newPassword");
+        if (currentPassword == null || newPassword == null || newPassword.length() < 4) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Current password and a new password of at least 4 characters are required"));
+        }
+        if (currentPassword.equals(newPassword)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Choose a password different from the current one"));
+        }
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userId") == null || session.getAttribute("userRole") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Not authenticated"));
+        }
+
+        String tableName;
+        String idColumn;
+        switch (((String) session.getAttribute("userRole")).toLowerCase()) {
+            case "student":
+                tableName = "Student";
+                idColumn = "Student_id";
+                break;
+            case "teacher":
+                tableName = "Teacher";
+                idColumn = "Teacher_id";
+                break;
+            case "assistant":
+                tableName = "Assistant";
+                idColumn = "Assistant_id";
+                break;
+            case "admin":
+                tableName = "Admin";
+                idColumn = "Admin_id";
+                break;
+            default:
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid session"));
+        }
+
+        Integer userId = ((Number) session.getAttribute("userId")).intValue();
+        String selectSql = "SELECT Credential FROM " + tableName + " WHERE " + idColumn + " = ?";
+        String storedPassword;
+        try {
+            storedPassword = jdbcTemplate.queryForObject(selectSql, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Account not found"));
+        }
+
+        if (storedPassword == null || !passwordEncoder.matches(currentPassword, storedPassword)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Your current password is incorrect"));
+        }
+
+        String updateSql = "UPDATE " + tableName + " SET Credential = ? WHERE " + idColumn + " = ?";
+        if (jdbcTemplate.update(updateSql, passwordEncoder.encode(newPassword), userId) != 1) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Account not found"));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+    }
+
     @GetMapping("/auth/me")
     public ResponseEntity<?> getCurrentUser(
             HttpServletRequest request) {

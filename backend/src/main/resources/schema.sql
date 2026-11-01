@@ -97,17 +97,17 @@ CREATE TABLE IF NOT EXISTS GlobalNotification (
 -- 5B. ASSISTANT LAST SEEN NOTIFICATION (Cycle Breaker Table)
 -- ============================================================
 
-CREATE TABLE IF NOT EXISTS Assistant_LastSeen_Notification (
-    Assistant_id INT PRIMARY KEY,
-    LastSeen_Global_Notification_id INT,
+CREATE TABLE IF NOT EXISTS assistant_last_seen_notification (
+    assistant_id INT PRIMARY KEY,
+    last_seen_global_notification_id INT,
 
     CONSTRAINT fk_aln_assistant
-        FOREIGN KEY (Assistant_id)
+        FOREIGN KEY (assistant_id)
         REFERENCES Assistant(Assistant_id)
         ON DELETE CASCADE,
 
     CONSTRAINT fk_aln_global_notification
-        FOREIGN KEY (LastSeen_Global_Notification_id)
+        FOREIGN KEY (last_seen_global_notification_id)
         REFERENCES GlobalNotification(Notification_id)
         ON DELETE SET NULL
 );

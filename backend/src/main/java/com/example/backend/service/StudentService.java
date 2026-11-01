@@ -5,6 +5,7 @@ import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.repository.StudentRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,14 +48,21 @@ public class StudentService {
         
         entity.setStudent_id(id);
         
-        // Only hash and update the password if a new one is provided
-        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
-            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        String credential = entity.getCredential();
+        if (credential == null || credential.isEmpty() || credential.equals(existingStudent.getCredential())) {
+            entity.setCredential(existingStudent.getCredential());
         } else {
-            entity.setCredential(existingStudent.getCredential()); // Retain the old hash
+            entity.setCredential(passwordEncoder.encode(credential));
         }
         
         return repository.save(entity);
+    }
+
+    @Transactional
+    public void updateLastSeenNotification(Integer id, Integer notificationId) {
+        if (repository.updateLastSeenNotification(id, notificationId) == 0) {
+            throw new ResourceNotFoundException("Student not found");
+        }
     }
 
     public void delete(Integer id) {

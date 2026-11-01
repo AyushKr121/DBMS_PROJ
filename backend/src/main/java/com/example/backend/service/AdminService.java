@@ -47,11 +47,11 @@ public class AdminService {
         
         entity.setAdmin_id(id);
         
-        // Only hash and update the password if a new one is provided
-        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
-            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        String credential = entity.getCredential();
+        if (credential == null || credential.isEmpty() || credential.equals(existingAdmin.getCredential())) {
+            entity.setCredential(existingAdmin.getCredential());
         } else {
-            entity.setCredential(existingAdmin.getCredential()); // Retain the old hash
+            entity.setCredential(passwordEncoder.encode(credential));
         }
         
         return repository.save(entity);

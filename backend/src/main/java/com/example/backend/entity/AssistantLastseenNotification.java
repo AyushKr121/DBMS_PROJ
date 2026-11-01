@@ -3,14 +3,14 @@ package com.example.backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Assistant_LastSeen_Notification")
+@Table(name = "assistant_last_seen_notification")
 public class AssistantLastseenNotification {
 
     @Id
-    @Column(name = "Assistant_id")
+    @Column(name = "assistant_id")
     private Integer Assistant_id;
 
-    @Column(name = "LastSeen_Global_Notification_id")
+    @Column(name = "last_seen_global_notification_id")
     private Integer LastSeen_Global_Notification_id;
 
     public AssistantLastseenNotification() {}
