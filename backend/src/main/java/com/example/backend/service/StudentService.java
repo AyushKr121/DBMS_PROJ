@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.entity.Student;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.repository.StudentRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,12 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public StudentService(StudentRepository repository) {
+    // Inject PasswordEncoder alongside your existing StudentRepository
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Student> getAll() {
@@ -26,6 +30,10 @@ public class StudentService {
     }
 
     public Student create(Student entity) {
+        // Hash the plain-text password before saving to the database
+        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
+            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        }
         return repository.save(entity);
     }
 
@@ -33,7 +41,19 @@ public class StudentService {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Student not found");
         }
+        
+        // Retrieve the existing student to prevent overwriting the password with null if it isn't sent in the request
+        Student existingStudent = repository.findById(id).get();
+        
         entity.setStudent_id(id);
+        
+        // Only hash and update the password if a new one is provided
+        if (entity.getCredential() != null && !entity.getCredential().isEmpty()) {
+            entity.setCredential(passwordEncoder.encode(entity.getCredential()));
+        } else {
+            entity.setCredential(existingStudent.getCredential()); // Retain the old hash
+        }
+        
         return repository.save(entity);
     }
 

@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS Assistant (
     Assistant_id INT PRIMARY KEY,
     First_name VARCHAR(100) NOT NULL,
     Last_name VARCHAR(100),
-    Aadhar_id VARCHAR(20) UNIQUE,
+    Aadhar_id VARCHAR(255) UNIQUE,
     DOB DATE,
     Email VARCHAR(255) NOT NULL,
     Credential VARCHAR(255) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS Admin (
     Admin_id INT PRIMARY KEY,
     First_name VARCHAR(100) NOT NULL,
     Last_name VARCHAR(100),
-    Aadhar_id VARCHAR(20) UNIQUE,
+    Aadhar_id VARCHAR(255) UNIQUE,
     DOB DATE,
     Email VARCHAR(255) NOT NULL,
     Credential VARCHAR(255) NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS Teacher (
     House_no VARCHAR(50),
     Street VARCHAR(150),
     Pincode VARCHAR(20),
-    Aadhar_id VARCHAR(20) UNIQUE,
+    Aadhar_id VARCHAR(255) UNIQUE,
     LastSeen_Global_Notification_id INT,
 
     CONSTRAINT fk_teacher_global_notification
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS Student (
     House_no VARCHAR(50),
     Street VARCHAR(150),
     Pincode VARCHAR(20),
-    Aadhar_id VARCHAR(20) UNIQUE,
+    Aadhar_id VARCHAR(255) UNIQUE,
     LastSeen_Global_Notification_id INT,
 
     CONSTRAINT fk_student_global_notification

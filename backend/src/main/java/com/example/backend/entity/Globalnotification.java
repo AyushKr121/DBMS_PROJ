@@ -76,5 +76,4 @@ public class Globalnotification {
     public void setDescription(String Description) {
         this.Description = Description;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.backend.entity;
 
 import jakarta.persistence.*;
+import com.example.backend.util.FieldEncryptor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -18,7 +19,8 @@ public class Assistant {
     @Column(name = "Last_name")
     private String Last_name;
 
-    @Column(name = "Aadhar_id")
+    @Column(name = "Aadhar_id", length = 255, columnDefinition = "VARCHAR(255)")
+    @Convert(converter = FieldEncryptor.class)
     private String Aadhar_id;
 
     @Column(name = "DOB")

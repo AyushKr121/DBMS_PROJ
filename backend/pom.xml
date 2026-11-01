@@ -32,6 +32,12 @@
 	</properties>
 	<dependencies>
 
+		<!-- security library, BCrypt hashing algorithms -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- Spring MVC -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

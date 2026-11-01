@@ -1,6 +1,7 @@
 package com.example.backend.entity;
 
 import jakarta.persistence.*;
+import com.example.backend.util.FieldEncryptor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -45,7 +46,8 @@ public class Teacher {
     @Column(name = "Pincode")
     private String Pincode;
 
-    @Column(name = "Aadhar_id")
+    @Column(name = "Aadhar_id", length = 255, columnDefinition = "VARCHAR(255)")
+    @Convert(converter = FieldEncryptor.class)
     private String Aadhar_id;
 
     // Changed to all lowercase to prevent Hibernate from inserting an underscore between last and seen
