@@ -1,0 +1,71 @@
+/* ---------------- Buttons ---------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.55rem 1rem; border: 1px solid var(--brand); border-radius: var(--r);
+  background: var(--brand); color: #fff; font: inherit; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; text-decoration: none; line-height: 1.2; white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.btn:hover { background: var(--brand-600); border-color: var(--brand-600); text-decoration: none; color: #fff; }
+.btn:disabled, .btn[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
+.btn--secondary { background: var(--surface); color: var(--brand); border-color: var(--brand); }
+.btn--secondary:hover { background: var(--brand-50); color: var(--brand-600); border-color: var(--brand); }
+.btn--subtle { background: var(--line-2); border-color: var(--line-2); color: var(--ink); }
+.btn--subtle:hover { background: var(--line); border-color: var(--line); color: var(--ink); }
+.btn--ghost { background: transparent; border-color: transparent; color: var(--brand); }
+.btn--ghost:hover { background: var(--brand-50); color: var(--brand-600); border-color: transparent; }
+.btn--danger { background: var(--danger); border-color: var(--danger); }
+.btn--danger:hover { background: #a42f23; border-color: #a42f23; }
+.btn--danger-outline { background: transparent; color: var(--danger); border-color: var(--danger); }
+.btn--danger-outline:hover { background: var(--danger-50); color: var(--danger); border-color: var(--danger); }
+.btn--accent { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+.btn--accent:hover { background: var(--accent-600); border-color: var(--accent-600); color: var(--ink); }
+.btn--sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; border-radius: var(--r-sm); }
+.btn--block { width: 100%; }
+
+/* ---------------- Inputs ---------------- */
+input, select, textarea {
+  width: 100%; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: #fff; color: var(--text); font: inherit; min-width: 0;
+}
+input[type='checkbox'], input[type='radio'] { width: auto; }
+textarea { resize: vertical; min-height: 84px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: var(--focus); }
+input:disabled, select:disabled, textarea:disabled { background: var(--line-2); color: var(--muted); cursor: not-allowed; }
+::placeholder { color: #93a0b4; }
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.field__label { font-size: 0.85rem; font-weight: 600; color: var(--ink-3); }
+.field__req { color: var(--danger); margin-left: 2px; }
+.field__hint { font-size: 0.8rem; color: var(--muted); }
+.field__error { font-size: 0.8rem; color: var(--danger); }
+
+.form-grid { display: grid; gap: 0.9rem 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.form-grid .span-2 { grid-column: 1 / -1; }
+.form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.4rem; }
+
+.search-input { position: relative; max-width: 360px; width: 100%; }
+.search-input input { padding-left: 2.1rem; }
+.search-input__icon { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 0.95rem; }
+
+/* segmented control (present / absent etc.) */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: #fff; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: #fff; color: var(--muted); padding: 0.35rem 0.8rem; font: inherit; font-size: 0.85rem; cursor: pointer; }
+.seg button:last-child { border-right: 0; }
+.seg button:hover { background: var(--line-2); }
+.seg button[aria-pressed='true'] { color: #fff; font-weight: 600; }
+.seg button[aria-pressed='true'].is-ok { background: var(--ok); }
+.seg button[aria-pressed='true'].is-half { background: var(--accent-600); }
+.seg button[aria-pressed='true'].is-bad { background: var(--danger); }
+.seg button[aria-pressed='true'].is-neutral { background: var(--brand); }
+
+/* searchable select (click or type) */
+.combo { position: relative; }
+.combo__control { position: relative; }
+.combo__control input { padding-right: 2.2rem; }
+.combo__clear { position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--muted); font-size: 1.1rem; cursor: pointer; padding: 0.1rem 0.4rem; line-height: 1; }
+.combo__list { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 4px); max-height: 260px; overflow-y: auto; background: #fff; border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 10px 30px rgba(20, 33, 61, 0.14); margin: 0; padding: 0.25rem; list-style: none; }
+.combo__option { padding: 0.45rem 0.6rem; border-radius: var(--r-sm); cursor: pointer; display: flex; flex-direction: column; }
+.combo__option small { color: var(--muted); }
+.combo__option[aria-selected='true'], .combo__option:hover { background: var(--brand-50); }
+.combo__empty { padding: 0.6rem; color: var(--muted); font-size: 0.9rem; }
